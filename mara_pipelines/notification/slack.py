@@ -57,6 +57,10 @@ class Slack(ChatNotifier):
         self._send_message({'text': text, 'attachments': attachments})
 
     def _send_message(self, message):
+        masks = mara_pipelines.config.password_masks()
+        if masks:
+        for mask in masks:
+            message = message.replace(mask, '***')
         response = requests.post(url='https://hooks.slack.com/services/' + self.token, json=message)
         if response.status_code != 200:
             raise ValueError(f'Could not send message. Status {response.status_code}, response "{response.text}"')
